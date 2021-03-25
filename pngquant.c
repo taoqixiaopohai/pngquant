@@ -57,7 +57,7 @@ use --force to overwrite. See man page for full list of options.\n";
 #include "libimagequant.h" /* if it fails here, run: git submodule update; ./configure; or add -Ilib to compiler flags */
 #include "pngquant_opts.h"
 
-char *PNGQUANT_VERSION = LIQ_VERSION_STRING " (July 2019)";
+char *PNGQUANT_VERSION = LIQ_VERSION_STRING " (February 2021)";
 
 static pngquant_error prepare_output_image(liq_result *result, liq_image *input_image, rwpng_color_transform tag, png8_image *output_image);
 static void set_palette(liq_result *result, png8_image *output_image);
@@ -495,7 +495,7 @@ static pngquant_error pngquant_file_internal(const char *filename, const char *o
         if (options->skip_if_larger) {
             // this is very rough approximation, but generally avoid losing more quality than is gained in file size.
             // Quality is raised to 1.5, because even greater savings are needed to justify big quality loss.
-            // but >50% savings are considered always worthwile in order to allow low quality conversions to work at all
+            // but >50% savings are considered always worthwhile in order to allow low quality conversions to work at all
             const double quality = quality_percent/100.0;
             const double expected_reduced_size = pow(quality, 1.5);
             output_image.maximum_file_size = (input_image_rwpng.file_size-1) * (expected_reduced_size < 0.5 ? 0.5 : expected_reduced_size);
@@ -730,8 +730,8 @@ static pngquant_error prepare_output_image(liq_result *result, liq_image *input_
     ** Step 3.7 [GRR]: allocate memory for the entire indexed image
     */
 
-    output_image->indexed_data = malloc(output_image->height * output_image->width);
-    output_image->row_pointers = malloc(output_image->height * sizeof(output_image->row_pointers[0]));
+    output_image->indexed_data = malloc((size_t)output_image->height * (size_t)output_image->width);
+    output_image->row_pointers = malloc((size_t)output_image->height * sizeof(output_image->row_pointers[0]));
 
     if (!output_image->indexed_data || !output_image->row_pointers) {
         return OUT_OF_MEMORY_ERROR;
